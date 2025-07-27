@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>KTCODE - Terminal Etam</title>
+  <script src="https://cdn.jsdelivr.net/pyodide/v0.23.4/full/pyodide.js"></script>
+  <style>
+    body {
+      font-family: monospace;
+      background: #f0f7fa;
+      padding: 20px;
+    }
+    h1 {
+      color: #007777;
+    }
+    textarea {
+      width: 100%;
+      height: 200px;
+      font-family: monospace;
+      font-size: 14px;
+    }
+    #tampilan {
+      margin-top: 20px;
+      background: #ffffff;
+      padding: 15px;
+      border: 1px solid #ccc;
+    }
+    #terminal {
+      margin-top: 20px;
+      width: 100%;
+      padding: 10px;
+      background: #000;
+      color: #0f0;
+      border: none;
+      font-family: monospace;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+  <h1>KTCODE - Terminal Etam</h1>
+  <p>Ketik kode HatKalTim di kene:</p>
+
+  <textarea id="ktkode">@tulisan
+<h2>Salam Dunia Etam!</h2>
+
+@gaya
+h2 {
+  color: biru;
+  text-align: tengah;
+}
+
+@ngomong
+alert("Halo Etam, KTCODE On!");
+
+@pitung
+print("Cetakan Python dari Terminal KTCODE")</textarea>
+
+  <br>
+  <input id="terminal" placeholder="ketik: jalan_yok_etam lalu Enter">
+
+  <div id="tampilan"></div>
+
+  <script>
+    let pitung;
+    async function mulai() {
+      pitung = await loadPyodide();
+    }
+    mulai();
+
+    document.getElementById("terminal").addEventListener("keydown", function(e) {
+      if (e.key === "Enter") {
+        if (this.value.trim() === "jalan_yok_etam") {
+          jalanakanKTCODE();
+          this.value = ""; // kosongkan terminal setelah jalan
+        } else {
+          alert("Perintah salah. Ketik: jalan_yok_etam");
+        }
+      }
+    });
+
+    async function jalanakanKTCODE() {
+      const isi = document.getElementById("ktkode").value;
+      const tampilan = document.getElementById("tampilan");
+      tampilan.innerHTML = "";
+
+      const tulisan = isi.match(/@tulisan([\s\S]*?)@/g)?.[0]?.replace('@tulisan', '').replace('@', '') || "";
+      const gaya = isi.match(/@gaya([\s\S]*?)@/g)?.[0]?.replace('@gaya', '').replace('@', '') || "";
+      const ngomong = isi.match(/@ngomong([\s\S]*?)@/g)?.[0]?.replace('@ngomong', '').replace('@', '') || "";
+      const python = isi.match(/@pitung([\s\S]*)/g)?.[0]?.replace('@pitung', '') || "";
+
+      if (tulisan) tampilan.innerHTML += tulisan;
+      if (gaya) tampilan.innerHTML += `<style>${gaya}</style>`;
+      if (ngomong) eval(ngomong);
+      if (python && pitung) await pitung.runPythonAsync(python);
+    }
+  </script>
+</body>
+  </html>
